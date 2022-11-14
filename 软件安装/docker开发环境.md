@@ -125,11 +125,11 @@ docker run --name rabbitmq \
 #### Elastic
 
 ```
-#21、拉取镜像
+#1、拉取镜像
 docker pull elasticsearch:8.3.2
-#22、创建网络
+#2、创建网络
 docker network create mynetwork
-#23、运行容器
+#3、运行容器
 docker run --name elasticsearch -d \
 -p 9200:9200 -p 9300:9300 \
 -e "discovery.type=single-node" \
@@ -139,7 +139,10 @@ elasticsearch:8.3.2
 
 #4拷贝配置文件
 docker cp elasticsearch:/usr/share/elasticsearch/config /Users/thebug4j/docker_data/elasticsearch/config/
+
 docker cp elasticsearch:/usr/share/elasticsearch/data /Users/thebug4j/docker_data/elasticsearch/data/
+
+docker cp elasticsearch:/usr/share/elasticsearch/plugins /Users/thebug4j/docker_data/elasticsearch/plugins/
 
 @4docker desktop 停止并删除刚刚创建的容器
 
@@ -148,6 +151,7 @@ docker run --name elasticsearch -d \
 -p 9200:9200 -p 9300:9300 \
 -v /Users/thebug4j/docker_data/elasticsearch/config:/usr/share/elasticsearch/config \
 -v /Users/thebug4j/docker_data/elasticsearch/data:/usr/share/elasticsearch/data \
+-v /Users/thebug4j/docker_data/elasticsearch/plugins:/usr/share/elasticsearch/plugins  \
 -v /Users/thebug4j/docker_data/elasticsearch/logs:/usr/share/elasticsearch/logs  \
 -e "discovery.type=single-node" \
 -e ES_JAVA_OPTS="-Xms200M -Xmx200M" \
@@ -168,10 +172,10 @@ http.cors.allow-origin: "*"
 #### kibana
 
 ```
-#21、拉取镜像
+#1、拉取镜像
 docker pull kibana:8.3.2
 
-#22、运行容器
+#2、运行容器
 docker run -d --name kibana \
 -p 5601:5601 \
 -e ELASTICSEARCH_URL=http://elasticsearch:9200 \
@@ -197,7 +201,38 @@ kibana:8.3.2
 bin/elasticsearch-create-enrollment-token --scope kibana
 拷贝并粘贴token，认证通过后输入账号密码即可登陆。elastic/elastic
 
+#7 如何切换中文
+在config/kibana.yml添加
+i18n.locale: "zh-CN" 
+
 ```
+
+#### ik分词器
+
+```
+#1 拷贝ik分词器插件到对应的es服务器挂载目录并解压
+/Users/thebug4j/Downloads/安装包/elasticsearch-analysis-ik-8.3.2.zip
+/Users/thebug4j/docker_data/elasticsearch/plugins
+
+#2 登录kibana测试ik分词器是否生效
+
+#ik_smart 智能切分，粗粒度
+POST /_analyze
+{
+  "text": "周杰伦喜欢唱青花瓷",
+  "analyzer": "ik_smart"
+}
+
+# ik_max_word 最细切分，细粒度
+POST /_analyze
+{
+  "text": "周杰伦喜欢唱青花瓷",
+  "analyzer": "ik_max_word"
+}
+
+```
+
+
 
 ### 6、zookeeper
 
