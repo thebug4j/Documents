@@ -93,7 +93,8 @@ ENTRYPOINT java -jar /tmp/app.jar
 ## 1、创建Dockerfile文件
 
 ```
-FROM java:8-alpine
+#FROM java:8-alpine
+FROM openjdk:8-jdk-alpine
 COPY ./app.jar /tmp/app.jar
 ENTRYPOINT java -jar /tmp/app.jar
 ```
