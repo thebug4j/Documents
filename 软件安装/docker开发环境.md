@@ -112,7 +112,17 @@ docker run --name rabbitmq \
 -e RABBITMQ_DEFAULT_PASS=admin  \
 -d rabbitmq:3-management
 
+2、下载对应版本的延迟插件
+https://github.com/rabbitmq/rabbitmq-delayed-message-exchange
 
+3、上传插件到容器内部
+docker cp /root/rabbitmq_delayed_message_exchange-3.10.2.ez rabbitmq:/plugins
+
+4、进入容器内部开启延迟插件
+rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+
+5、退出容器重启服务
+docker restart rabbitmq
 
 ```
 
@@ -274,6 +284,80 @@ ssh-keygen -t ecdsa -P '' -f /etc/ssh/ssh_host_ecdsa_key
 ssh-keygen -t ed25519 -P '' -f /etc/ssh/ssh_host_ed25519_key
 /usr/sbin/sshd
 @6、ssh工具进行登录 2222端口
+
+```
+
+
+
+### 8、nacos
+
+```
+#1、拉镜像并运行容器
+docker run \
+--name nacos-server \
+-p 8848:8848 \
+-p 9848:9848 \
+-p 9849:9849 \
+-e MODE=standalone \
+-e SPRING_DATASOURCE_PLATFORM=mysql \
+-e MYSQL_SERVICE_HOST=192.168.31.121 \
+-e MYSQL_SERVICE_PORT=3306 \
+-e MYSQL_SERVICE_USER=nacos \
+-e MYSQL_SERVICE_PASSWORD=nacos \
+-e MYSQL_SERVICE_DB_NAME=nacos \
+-e TIME_ZONE='Asia/Shanghai' \
+-d nacos/nacos-server:v2.1.2-slim
+
+#2、拷贝配置文件
+mkdir -p /Users/thebug4j/docker_data/nacos
+docker cp -a nacos-server:/home/nacos /Users/thebug4j/docker_data/nacos
+
+@3、关闭并删除该容器
+
+#4、重新运行容器
+docker run \
+--name nacos-server \
+-p 8848:8848 \
+-p 9848:9848 \
+-p 9849:9849 \
+-e MODE=standalone \
+-e SPRING_DATASOURCE_PLATFORM=mysql \
+-e MYSQL_SERVICE_HOST=1.117.161.106 \
+-e MYSQL_SERVICE_PORT=3306 \
+-e MYSQL_SERVICE_USER=root \
+-e MYSQL_SERVICE_PASSWORD=Liu@Xmy520 \
+-e MYSQL_SERVICE_DB_NAME=nacos2 \
+-e TIME_ZONE='Asia/Shanghai' \
+-v /Users/thebug4j/docker_data/nacos/nacos/conf:/home/nacos/conf \
+-v /Users/thebug4j/docker_data/nacos/nacos/logs:/home/nacos/logs \
+-v /Users/thebug4j/docker_data/nacos/nacos/data:/home/nacos/data \
+-d nacos/nacos-server:v2.1.2-slim
+
+
+```
+
+### 9、chatgpt-on-wechat
+
+```
+#1、拉镜像并运行容器
+docker pull zhayujie/chatgpt-on-wechat
+
+#2、运行
+docker run \
+--name chatgpt-on-wechat \
+-d zhayujie/chatgpt-on-wechat:latest
+
+#3、拷贝配置文件
+mkdir -p /Users/thebug4j/docker_data/chatgpt-on-wechat
+docker cp -a chatgpt-on-wechat:/app/config.json /Users/thebug4j/docker_data/chatgpt-on-wechat/config.json
+
+@4、关闭并删除该容器
+
+#4、重新运行容器
+docker run \
+--name chatgpt-on-wechat \
+-v /Users/thebug4j/docker_data/chatgpt-on-wechat/config.json:/app/config.json \
+-d zhayujie/chatgpt-on-wechat:latest
 
 ```
 

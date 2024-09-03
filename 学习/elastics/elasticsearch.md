@@ -405,7 +405,7 @@ GET /kibana_sample_data_ecommerce/_search
 
 ### <2>Boolean Query
 
-​	![image-20221117000652244](/Users/thebug4j/workspace/github/Documents/学习/elastics/assets/image-20221117000652244.png)
+![image-20221117000652244](/Users/thebug4j/workspace/github/Documents/学习/elastics/assets/image-20221117000652244.png)
 
 
 
